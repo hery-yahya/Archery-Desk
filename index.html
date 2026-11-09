@@ -24,7 +24,7 @@ textarea{width:100%;height:76px;background:var(--bg);border:1px dashed var(--ln)
 .big{color:var(--ac);font-size:20px;margin-left:6px}.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:8px}.rules>div{background:var(--bg);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;font-size:13px}.rules label{margin:0}
 .w{background:var(--wn);border-radius:12px;padding:10px;margin:8px 0}details{margin:4px 0}.m{color:var(--mut)}.empty{text-align:center;padding:30px 16px}.empty div{font-size:44px}
 nav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));max-width:520px;margin:auto;display:flex;background:var(--card);border:1px solid var(--ln);border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:4px;z-index:5}nav button{flex:1;background:none;color:var(--mut);border-radius:18px;min-height:52px;font-size:12px;line-height:1.2;padding:4px}nav button b{display:block;font-size:18px}nav button.on{background:var(--pri);color:var(--onp)}
-label{display:flex;gap:8px;align-items:center;margin:8px 0}[hidden]{display:none!important}
+label{display:flex;gap:8px;align-items:center;margin:8px 0}.row label{margin:0;font-size:12px;color:var(--mut)}[hidden]{display:none!important}
 </style></style></head><body>
 <div class="hero"><h1>ArcheryDesk</h1><p>Rapikan data pendaftaran &amp; hitung kebutuhan bantalan — langsung di HP, tanpa server.</p></div>
 <main>
@@ -45,10 +45,10 @@ label{display:flex;gap:8px;align-items:center;margin:8px 0}[hidden]{display:none
 <script>
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const SN={R:'Recurve',B:'Barebow',C:'Compound',N:'Nasional',H:'Horsebow'},RL={name:'Nama',gender:'Gender',dob:'Tgl lahir',club:'Klub/Sekolah',div:'Divisi',phone:'WhatsApp'};
-const DC={asc:0,prim:'age',ref:'',exh:0,pe:0,on16:0,on8:1,bq:0,be:0,per:{q:4,r16:2,r8:2,r4:1,f:1}};let S={hdr:[],rows:[],map:{},cfg:{...DC},P:null,ph:'q'},D=null;
+const DC={asc:0,prim:'age',ref:'',exh:0,pe:0,on16:0,on8:1,bq:0,be:0,st:{},per:{q:4,r16:2,r8:2,r4:1,f:1}};let S={hdr:[],rows:[],map:{},cfg:{...DC},P:null,ph:'q'},D=null;
 function rsP(){S.P={q:{ses:[{n:'Kualifikasi 1',it:[]}],cur:0},e:{ses:[{n:'Eliminasi 1',it:[]}],cur:0}}}
 try{const x=JSON.parse(localStorage.getItem('ad')||'null');if(x)S=Object.assign(S,x)}catch(e){}
-S.cfg=Object.assign({},DC,S.cfg);S.cfg.per=Object.assign({},DC.per,S.cfg.per);if(!S.P)rsP();
+S.cfg=Object.assign({},DC,S.cfg);S.cfg.per=Object.assign({},DC.per,S.cfg.per);S.cfg.st=Object.assign({},S.cfg.st);if(!S.P)rsP();
 const save=()=>{try{localStorage.setItem('ad',JSON.stringify(S))}catch(e){}};
 const nk=s=>s.toLowerCase().replace(/[^\p{L}\p{N} ]/gu,' ').replace(/\s+/g,' ').trim(),iso=d=>d.toISOString().slice(0,10);
 const g=v=>{v=String(v).trim().toLowerCase();return /^(m|l|man|men|male|laki.*|pria|putra|boy)$/.test(v)?'M':/^(w|f|p|woman|women|female|perempuan|wanita|putri|girl)$/.test(v)?'W':null};
@@ -101,10 +101,10 @@ function run(){save();if(!S.rows.length){D=null;return draw()}
  E.filter(e=>e.ok).forEach(e=>{const d=dv[e.dv.k]=dv[e.dv.k]||Object.assign({},e.dv,{n:{M:0,W:0}});d.n[e.gn]++});codes(dv);E.forEach(e=>{e.dv=dv[e.dv.k]||e.dv});
  D={E,P,dv,dl:Object.values(dv).sort((a,b)=>'RBCNH'.indexOf(a.st)-'RBCNH'.indexOf(b.st)||a.code.localeCompare(b.code,'id',{numeric:true}))};draw()}
 /* ---- bantalan ---- */
-const ERs=()=>[['r16',16,'1/8'],['r8',8,'1/4'],['r4',4,'1/2'],['f',4,'Final']].filter(r=>r[0]=='r4'||r[0]=='f'||S.cfg['on'+r[0].slice(1)]),cols=ph=>ph=='q'?['Kualifikasi']:ERs().map(r=>r[2]),okd=(d,ph)=>ph=='q'||d.tr!='P'||S.cfg.pe;
-const butts=(n,ph)=>{const p=S.cfg.per;return ph=='q'?[Math.ceil(n/p.q)]:ERs().map(r=>n>=2?Math.ceil(Math.min(n,r[1])/p[r[0]]):0)};
+const ER=[['r16',16,'1/8'],['r8',8,'1/4'],['r4',4,'1/2'],['f',4,'Final']],cols=ph=>ph=='q'?['Kualifikasi']:ER.map(r=>r[2]),okd=(d,ph)=>ph=='q'||d.tr!='P'||S.cfg.pe,defSt=()=>S.cfg.on16?'r16':S.cfg.on8?'r8':'r4',stOf=d=>S.cfg.st[d.k]||defSt();
+const butts=(n,ph,d)=>{const p=S.cfg.per;if(ph=='q')return[Math.ceil(n/p.q)];const s0=ER.findIndex(r=>r[0]==stOf(d));return ER.map((r,i)=>i>=s0&&n>=2?Math.ceil(Math.min(n,r[1])/p[r[0]]):0)};
 const ca=k=>{const[dk,gn]=k.split('#'),d=D.dv[dk];return{d,g:gn,n:d?d.n[gn]:0}};
-function sres(s,ph){const rows=s.it.map(ca).filter(c=>c.n>0&&okd(c.d,ph)).map(c=>({c,b:butts(c.n,ph)})),tot=cols(ph).map((_,j)=>rows.reduce((a,r)=>a+r.b[j],0));return{rows,tot,need:Math.max(0,...tot)}}
+function sres(s,ph){const rows=s.it.map(ca).filter(c=>c.n>0&&okd(c.d,ph)).map(c=>({c,b:butts(c.n,ph,c.d)})),tot=cols(ph).map((_,j)=>rows.reduce((a,r)=>a+r.b[j],0));return{rows,tot,need:Math.max(0,...tot)}}
 /* ---- tampilan ---- */
 const T=(h,r,cl)=>`<table><tr>${h.map((x,i)=>`<th class="${cl&&cl[i]?'n':''}">${x}</th>`).join('')}</tr>${r.map(x=>`<tr${x.t?' class="t"':''}>${(x.t?x.c:x).map((c,i)=>`<td class="${cl&&cl[i]?'n':''}">${c}</td>`).join('')}</tr>`).join('')}</table>`;
 function draw(){const has=!!D;$('#mp').hidden=$('#is').hidden=$('#tb').hidden=!has;if(!has){$('#t1').innerHTML=$('#t2').innerHTML='<div class="card empty"><div>🎯</div><b>Belum ada data</b><p class="m">Buka tab Data, pilih file XLSX/CSV atau tempel dari Sheets. Rekap dan planner terisi otomatis.</p></div>';return}
@@ -126,20 +126,20 @@ function plan(){const ph=S.ph,Q=S.P[ph],s=Q.ses[Q.cur],C=S.cfg,R={q:S.P.q.ses.ma
  chip=(d,gn,l)=>{if(!d.n[gn])return'';const k=d.k+'#'+gn,a=at(k);return`<button class="chip ${a==Q.cur?'on':a>=0?'ot':''}" data-g="${gn}" data-k="${k}">${l} ${d.n[gn]}${a>=0&&a!=Q.cur?' · '+(a+1):''}</button>`},
  ck=(o,l)=>`<label><input type="checkbox" data-o="${o}"${C[o]?' checked':''}> ${l}</label>`;
  $('#t2').innerHTML=`<div class="card stat"><div class="ring"><b>${Math.max(pq,pe)}</b><span>bantalan</span></div><div><b>Kebutuhan puncak</b><div class="m">Kualifikasi <b>${pq}</b> · Eliminasi <b>${pe}</b><br>Fase berurutan, bantalan dipakai ulang.</div></div></div>
- <details class="card" open><summary><b>⚙️ Aturan archer per bantalan</b></summary><div class="rules"><div><span>Kualifikasi</span>${sel('q')}</div><div>${ck('on16','1/8 Final')}${sel('r16')}</div><div>${ck('on8','1/4 Final')}${sel('r8')}</div><div><span>1/2 Final</span>${sel('r4')}</div><div><span>Final (Emas + Perunggu)</span>${sel('f')}</div></div><p class="m" style="margin:8px 0 0">Pilih 1–4 archer per bantalan. Final memuat 4 archer. Matikan 1/8 atau 1/4 bila tidak dipertandingkan.</p></details>
+ <details class="card" open><summary><b>⚙️ Aturan archer per bantalan</b></summary><div class="rules"><div><span>Kualifikasi</span>${sel('q')}</div><div>${ck('on16','1/8 Final (awal default)')}${sel('r16')}</div><div>${ck('on8','1/4 Final (awal default)')}${sel('r8')}</div><div><span>1/2 Final</span>${sel('r4')}</div><div><span>Final (Emas + Perunggu)</span>${sel('f')}</div></div><p class="m" style="margin:8px 0 0">Pilih 1–4 archer per bantalan. Final memuat 4 archer. Babak awal default = babak terawal yang dicentang (bila tidak ada: 1/2). Ubah per divisi lewat pilihan <b>Mulai</b> pada daftar kategori di fase Eliminasi.</p></details>
  <div class="seg"><button data-ph="q" class="${ph=='q'?'on':''}">Kualifikasi</button><button data-ph="e" class="${ph=='e'?'on':''}">Eliminasi</button></div>
  <div class="tabs">${Q.ses.map((x,i)=>`<button data-s="${i}" class="${i==Q.cur?'on':''}">${esc(x.n)}</button>`).join('')}<button class="s" id="sa">+ Sesi</button></div>
- <div class="card"><b>Pilih kategori — ${esc(s.n)}</b>${ph=='e'&&!C.pe?'<p class="m" style="margin:0">Divisi Pemula tidak punya eliminasi (ubah di tab Ekspor → Pengaturan).</p>':''}${D.dl.filter(d=>okd(d,ph)).map(d=>`<div class="row"><div class="l"><b>${d.code}</b> <small>${esc(d.label)}</small></div>${chip(d,'M','Putra')}${chip(d,'W','Putri')}</div>`).join('')}
+ <div class="card"><b>Pilih kategori — ${esc(s.n)}</b>${ph=='e'&&!C.pe?'<p class="m" style="margin:0">Divisi Pemula tidak punya eliminasi (ubah di tab Ekspor → Pengaturan).</p>':''}${D.dl.filter(d=>okd(d,ph)).map(d=>`<div class="row"><div class="l"><b>${d.code}</b> <small>${esc(d.label)}</small></div>${ph=='e'?`<label>Mulai <select data-st="${d.k}">${ER.slice(0,3).map(r=>`<option value="${r[0]}"${stOf(d)==r[0]?' selected':''}>${r[2]}</option>`).join('')}</select></label>`:''}${chip(d,'M','Putra')}${chip(d,'W','Putri')}</div>`).join('')}
  <p style="margin:10px 0 0"><button class="s" id="sr">Ganti nama</button> ${Q.ses.length>1?'<button class="s" id="sd">Hapus sesi</button>':''}</p></div>
- <div class="card sc"><b>Hasil ${esc(s.n)}<span class="big">${r.need} bantalan</span></b>${r.rows.length?T(['Kategori','n',...cols(ph)],[...r.rows.map(x=>[x.c.d.code+' '+(x.c.g=='M'?'Putra':'Putri'),x.c.n,...x.b]),{t:1,c:['Total babak','',...r.tot]}],[0,1,...cols(ph).map(_=>1)]):'<span class="m">Klik kategori di atas.</span>'}
+ <div class="card sc"><b>Hasil ${esc(s.n)}<span class="big">${r.need} bantalan</span></b>${r.rows.length?T(['Kategori','n',...cols(ph)],[...r.rows.map(x=>[x.c.d.code+' '+(x.c.g=='M'?'Putra':'Putri'),x.c.n,...x.b.map(v=>v||'–')]),{t:1,c:['Total babak','',...r.tot]}],[0,1,...cols(ph).map(_=>1)]):'<span class="m">Klik kategori di atas.</span>'}
  ${conf.length?`<div class="w">⚠️ Bentrok: ${conf.length} orang ada di ≥2 kategori pada sesi ini — ${conf.slice(0,12).map(esc).join(', ')}</div>`:''}
  <label>Bantalan tersedia <input type="number" min="0" data-b="${bk}" value="${bt||''}" style="width:90px"></label>${bt&&r.need?`<p style="margin:0">→ <b>${Math.ceil(r.need/bt)} gelombang</b></p>`:''}</div>
  <div class="card sc"><b>Ringkasan ${ph=='q'?'Kualifikasi':'Eliminasi'}</b>${T(['Sesi','Kategori','Kebutuhan bantalan'],[...Q.ses.map((x,i)=>[esc(x.n),x.it.length,R[ph][i].need]),{t:1,c:['Puncak '+(ph=='q'?'kualifikasi':'eliminasi'),'',ph=='q'?pq:pe]}],[0,1,1])}<p class="m" style="margin:8px 0 0">Belum dijadwalkan: ${D.dl.filter(d=>okd(d,ph)).reduce((a,d)=>a+['M','W'].filter(x=>d.n[x]&&at(d.k+'#'+x)<0).length,0)} kategori. Tiap kategori &amp; gender memakai bantalan sendiri.</p></div>`}
 function exp(){const wb=XLSX.utils.book_new(),A=(n,a)=>XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(a),n),V=D.E.filter(e=>e.ok),C=S.cfg;
  A('Data Atlet',[['No.','Nama','Divisi (kode)','Gender (M/W)','Club/Country','Kode Club','Tgl Lahir','No. WA'],...V.map((e,i)=>[i+1,e.name,e.dv.code,e.gn,e.cl.n,e.cl.c,e.dob?iso(e.dob):'',e.ph.v])]);
  A('Kamus Divisi',[['Kode','Divisi','Gaya','Jarak (M)'],...D.dl.map(d=>[d.code,d.label,d.st,d.di])]);A('Rekap',[['Kode','Divisi','Putra (M)','Putri (W)','Total'],...D.dl.map(d=>[d.code,d.label,d.n.M,d.n.W,d.n.M+d.n.W])]);
- const B=[['Fase','Sesi','Kode','Divisi','Gender','n','Kualifikasi','1/8 Final','1/4 Final','1/2 Final','Final (E+P)']],ids=['r16','r8','r4','f'];
- ['q','e'].forEach(ph=>S.P[ph].ses.forEach(s=>sres(s,ph).rows.forEach(r=>B.push([ph=='q'?'Kualifikasi':'Eliminasi',s.n,r.c.d.code,r.c.d.label,r.c.g,r.c.n,...(ph=='q'?[r.b[0],'','','','']:['',...ids.map(i=>{const j=ERs().findIndex(x=>x[0]==i);return j<0?'':r.b[j]})])]))));A('Bantalan per Sesi',B);
+ const B=[['Fase','Sesi','Kode','Divisi','Gender','n','Mulai eliminasi','Kualifikasi','1/8 Final','1/4 Final','1/2 Final','Final (E+P)']];
+ ['q','e'].forEach(ph=>S.P[ph].ses.forEach(s=>sres(s,ph).rows.forEach(x=>B.push([ph=='q'?'Kualifikasi':'Eliminasi',s.n,x.c.d.code,x.c.d.label,x.c.g,x.c.n,ph=='q'?'':ER.find(r=>r[0]==stOf(x.c.d))[2],...(ph=='q'?[x.b[0],'','','','']:['',...x.b.map(v=>v||'')])]))));A('Bantalan per Sesi',B);
  A('Aturan Bantalan',[['Babak','Archer/bantalan','Aktif'],['Kualifikasi',C.per.q,'Ya'],['1/8 Final',C.per.r16,C.on16?'Ya':'Tidak'],['1/4 Final',C.per.r8,C.on8?'Ya':'Tidak'],['1/2 Final',C.per.r4,'Ya'],['Final (Emas+Perunggu)',C.per.f,'Ya']]);XLSX.writeFile(wb,'ArcheryDesk.xlsx')}
 /* ---- event ---- */
 $('#f').onchange=async e=>{const f=e.target.files[0];if(!f)return;const wb=XLSX.read(await f.arrayBuffer(),{type:'array'});let best=[];wb.SheetNames.forEach(n=>{const a=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,raw:true,defval:''});if(a.length>best.length)best=a});load(best)};
@@ -150,7 +150,7 @@ $('#t2').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.datase
  if(b.dataset.k){const k=b.dataset.k;if(s.it.includes(k))s.it=s.it.filter(y=>y!=k);else{Q.ses.forEach(x=>x.it=x.it.filter(y=>y!=k));s.it.push(k)}}
  else if(b.dataset.s)Q.cur=+b.dataset.s;else if(b.id=='sa'){Q.ses.push({n:(S.ph=='q'?'Kualifikasi ':'Eliminasi ')+(Q.ses.length+1),it:[]});Q.cur=Q.ses.length-1}
  else if(b.id=='sr'){const n=prompt('Nama sesi',s.n);if(n)s.n=n}else if(b.id=='sd'){Q.ses.splice(Q.cur,1);Q.cur=0}else return;save();plan()};
-$('#t2').onchange=e=>{const t=e.target,d=t.dataset;if(d.p)S.cfg.per[d.p]=+t.value;else if(d.o)S.cfg[d.o]=+t.checked;else if(d.b)S.cfg[d.b]=+t.value||0;else return;run()};
+$('#t2').onchange=e=>{const t=e.target,d=t.dataset;if(d.p)S.cfg.per[d.p]=+t.value;else if(d.st)S.cfg.st[d.st]=t.value;else if(d.o)S.cfg[d.o]=+t.checked;else if(d.b)S.cfg[d.b]=+t.value||0;else return;run()};
 $('#ex').onclick=()=>D?exp():alert('Belum ada data.');
 const cf=(id,fn)=>$(id).onchange=e=>{fn(e.target);run()};
 cf('#c-ex',t=>S.cfg.exh=+t.checked);cf('#c-pe',t=>S.cfg.pe=+t.checked);cf('#c-as',t=>S.cfg.asc=+t.value);cf('#c-pr',t=>S.cfg.prim=t.value);cf('#c-rf',t=>S.cfg.ref=t.value);
