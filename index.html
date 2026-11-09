@@ -1,0 +1,138 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>ArcheryDesk</title>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1F4E78"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--bg:#f6f7f9;--fg:#1b1f24;--card:#fff;--mut:#667085;--pri:#1F4E78;--ln:#d9dde3;--hi:#dbeafe;--wn:#fff4e0}
+@media(prefers-color-scheme:dark){:root{--bg:#14171a;--fg:#e8eaed;--card:#1e2226;--mut:#9aa3ad;--pri:#6aa9e0;--ln:#343a41;--hi:#1d3a5c;--wn:#3a2d12}}
+*{box-sizing:border-box}body{margin:0;font:15px/1.45 system-ui,sans-serif;background:var(--bg);color:var(--fg);padding:env(safe-area-inset-top) 0 78px}
+header{padding:12px 16px;font-weight:700;color:var(--pri);font-size:18px}main{max-width:1000px;margin:auto;padding:0 12px}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:12px;margin:0 0 12px}.card>b{display:block;margin-bottom:6px}
+.sc{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:5px 8px;border-bottom:1px solid var(--ln);text-align:left;white-space:nowrap}th{color:var(--mut);font-weight:600}td.n,th.n{text-align:right}tr.t td{font-weight:700}
+button,select,input,textarea{font:inherit;color:inherit}button{background:var(--pri);color:#fff;border:0;border-radius:8px;padding:8px 12px;min-height:40px;cursor:pointer}button.s{background:transparent;color:var(--pri);border:1px solid var(--pri)}
+textarea{width:100%;height:70px;background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:8px;margin:8px 0}select,input[type=date],input[type=number]{background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:6px;min-height:36px}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}.k{background:var(--bg);border-radius:10px;padding:8px 10px}.k b{display:block;font-size:22px}.k span{color:var(--mut);font-size:12px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.tabs button{background:var(--card);color:var(--fg);border:1px solid var(--ln)}.tabs button.on{background:var(--pri);color:#fff}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:6px 0;border-bottom:1px solid var(--ln)}.row .l{flex:1;min-width:170px}.row small{color:var(--mut)}
+.chip{background:var(--card);color:var(--fg);border:1px solid var(--ln);min-height:36px;padding:4px 10px}.chip.on{background:var(--pri);color:#fff}.chip.ot{opacity:.5}
+.w{background:var(--wn);border-radius:8px;padding:8px;margin:6px 0}details{margin:4px 0}summary{cursor:pointer}.m{color:var(--mut)}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom)}nav button{flex:1;background:none;color:var(--mut);border-radius:0;min-height:52px}nav button.on{color:var(--pri);font-weight:700}
+label{display:flex;gap:8px;align-items:center;margin:6px 0}[hidden]{display:none!important}
+</style></head><body>
+<header>🏹 ArcheryDesk <span class="m" style="font-weight:400;font-size:12px">data peserta &amp; kalkulator bantalan</span></header>
+<main>
+<section id="t0"><div class="card"><b>1. Impor data</b><input type="file" id="f" accept=".xlsx,.xls,.csv,.tsv,.txt"><textarea id="pt" placeholder="…atau tempel data dari Excel / Google Sheets di sini"></textarea><button id="bp">Proses tempelan</button> <button class="s" id="bc">Hapus data</button><p class="m" style="margin:8px 0 0">Data diproses di perangkat ini, tidak dikirim ke server.</p></div>
+<div class="card" id="mp" hidden></div><div class="card" id="is" hidden></div><div class="card sc" id="tb" hidden></div></section>
+<section id="t1" hidden></section><section id="t2" hidden></section>
+<section id="t3" hidden><div class="card"><b>Ekspor</b><button id="ex">Unduh XLSX</button><p class="m">Sheet: Data Atlet, Kamus Divisi, Rekap, Bantalan per Sesi.</p></div>
+<div class="card"><b>Pengaturan</b>
+<label><input type="checkbox" id="c-br"> Perebutan perunggu bersamaan Final (Final = hingga 4 archer)</label>
+<label>Nomor kode 1 = <select id="c-as"><option value="0">usia/jenjang tertinggi, jarak terjauh</option><option value="1">usia/jenjang terendah, jarak terdekat</option></select></label>
+<label>Urut utama <select id="c-pr"><option value="age">Usia → Jarak</option><option value="dist">Jarak → Usia</option></select></label>
+<label><input type="checkbox" id="c-ex"> Izinkan tingkat pada Exhibition (RE1, RE2)</label>
+<label>Tanggal acuan usia <input type="date" id="c-rf"></label>
+<label>Bantalan tersedia <input type="number" id="c-bt" min="0" style="width:90px"></label></div></section>
+</main>
+<nav><button data-t="0" class="on">Data</button><button data-t="1">Rekap</button><button data-t="2">Planner</button><button data-t="3">Ekspor</button></nav>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SN={R:'Recurve',B:'Barebow',C:'Compound',N:'Nasional',H:'Horsebow'},RL={name:'Nama',gender:'Gender',dob:'Tgl lahir',club:'Klub/Sekolah',div:'Divisi',phone:'WhatsApp'};
+let S={hdr:[],rows:[],map:{},cfg:{asc:0,prim:'age',bronze:1,ref:'',butts:0,exh:0},ses:[{n:'Sesi 1',it:[]}],cur:0},D=null;
+try{const x=JSON.parse(localStorage.getItem('ad')||'null');if(x)S=Object.assign(S,x)}catch(e){}
+const save=()=>{try{localStorage.setItem('ad',JSON.stringify(S))}catch(e){}};
+const nk=s=>s.toLowerCase().replace(/[^\p{L}\p{N} ]/gu,' ').replace(/\s+/g,' ').trim(),iso=d=>d.toISOString().slice(0,10);
+const g=v=>{v=String(v).trim().toLowerCase();return /^(m|l|man|men|male|laki.*|pria|putra|boy)$/.test(v)?'M':/^(w|f|p|woman|women|female|perempuan|wanita|putri|girl)$/.test(v)?'W':null};
+const age=(d,r)=>{let a=r.getUTCFullYear()-d.getUTCFullYear();if(r.getUTCMonth()<d.getUTCMonth()||(r.getUTCMonth()==d.getUTCMonth()&&r.getUTCDate()<d.getUTCDate()))a--;return a};
+/* ---- impor ---- */
+const SYN={name:/nama|full ?name|^name|athlete|atlet|peserta/i,gender:/gender|kelamin|^jk$|^sex/i,dob:/birth|lahir|dob|^ttl/i,club:/club|klub|kontingen|sekolah|school|contingent|^team|asal/i,div:/division|divisi|kategori|category|^kelas/i,phone:/whats|^wa|^hp|telepon|phone|kontak/i};
+function parseText(t){const L=t.replace(/\r/g,'').split('\n').filter(l=>l.trim()),d=['\t',';',','].map(c=>[c,L.slice(0,5).join('').split(c).length]).sort((a,b)=>b[1]-a[1])[0][0];return L.map(l=>l.split(d))}
+function load(a){a=a.map(r=>r.map(c=>c==null?'':c));const f=r=>r.filter(x=>String(x).trim()).length;let h=a.findIndex((r,i)=>f(r)>=3&&a[i+1]&&f(a[i+1])>=3&&r.filter(x=>typeof x=='string'&&isNaN(x)).length>=3);if(h<0)h=0;
+ S.hdr=a[h].map(x=>String(x).trim());S.rows=a.slice(h+1).filter(r=>f(r));S.map=autoMap();S.ses=[{n:'Sesi 1',it:[]}];S.cur=0;run()}
+function autoMap(){const m={},u=new Set(),H=S.hdr;
+ for(const r in SYN){const i=H.findIndex((h,i)=>!u.has(i)&&SYN[r].test(h));if(i>=0){m[r]=i;u.add(i)}}
+ const fr=(i,f)=>{const c=S.rows.slice(0,200).map(r=>String(r[i]).trim()).filter(Boolean);return c.length?c.filter(f).length/c.length:0};
+ H.forEach((h,i)=>{if(u.has(i))return;const set=k=>{m[k]=i;u.add(i)};
+  if(m.gender==null&&fr(i,v=>g(v))>.9)set('gender');else if(m.div==null&&fr(i,v=>/recurve|compound|barebow|nasional|horse/i.test(v))>.7)set('div');
+  else if(m.dob==null&&fr(i,v=>/^\d{1,2}[\/\-.]\d{1,2}[\/\-.]\d{2,4}$/.test(v))>.8)set('dob');else if(m.phone==null&&fr(i,v=>v.replace(/\D/g,'').length>=9)>.7)set('phone')});return m}
+/* ---- normalisasi ---- */
+function dcol(i){let a=0,b=0;S.rows.forEach(r=>{const m=String(r[i]).match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/);if(m){if(+m[1]>12)a++;if(+m[2]>12)b++}});return b>a?'md':'dm'}
+function pdt(v,o){if(v===''||v==null)return null;if(typeof v=='number')return new Date(Math.round((v-25569)*864e5));v=String(v).trim();let m=v.match(/^(\d{4})[\/\-.](\d{1,2})[\/\-.](\d{1,2})/);if(m)return new Date(Date.UTC(+m[1],m[2]-1,+m[3]));
+ m=v.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/);if(!m)return null;let y=+m[3];if(y<100)y+=y>30?1900:2000;const[d,mo]=o=='dm'?[+m[1],+m[2]]:[+m[2],+m[1]];return mo<1||mo>12||d<1||d>31?null:new Date(Date.UTC(y,mo-1,d))}
+function nph(v){let d=String(v).replace(/\D/g,'');if(!d)return{v:'',bad:0};if(d.startsWith('62'))d='0'+d.slice(2);else if(d[0]=='8')d='0'+d;return{v:d,bad:(d.length<10||d.length>13||/[a-z]/i.test(String(v)))?1:0}}
+function pd(t){t=String(t||'').toLowerCase();const st=/recurve/.test(t)?'R':/barebow/.test(t)?'B':/compound/.test(t)?'C':/horse/.test(t)?'H':/nasional|standar|std/.test(t)?'N':'?',tr=/pemula|beginner|novice/.test(t)?'P':/exhib|eksibisi|demo/.test(t)?'E':'';let rk=null,lb='',m;
+ if(m=t.match(/\bu\s?-?(\d+)|under\s?(\d+)/)){rk=+(m[1]||m[2]);lb='U'+rk}else if(/\bsma\b|smk/.test(t)){rk=18;lb='SMA'}else if(/smp|mts/.test(t)){rk=15;lb='SMP'}else if(m=t.match(/\bsd\D*(\d)\s*[-–]\s*(\d)/)){rk=+m[2]+6;lb='SD '+m[1]+'-'+m[2]}
+ const di=+((t.match(/(\d+)\s*m\b/)||[])[1]||0);return{st,tr,rk,di,k:[st,tr,rk,di].join('|'),label:(SN[st]||'?')+(tr=='P'?' Pemula':tr=='E'?' Exhibition':'')+(lb?' '+lb:'')+(di?' '+di+'M':'')}}
+function codes(dv){const G={};Object.values(dv).forEach(d=>(G[d.st+d.tr]=G[d.st+d.tr]||[]).push(d));
+ for(const k in G){const L=G[k],pr=S.cfg.prim=='age',tr=L[0].tr;if((tr=='P'||tr=='E')&&L.length==1){L[0].code=k;continue}
+  const b=L.filter(d=>d.rk==null),n=L.filter(d=>d.rk!=null);b.forEach(d=>d.code=k+(b.length>1?'-'+d.di:''));
+  n.sort((x,y)=>{const c=(pr?x.rk-y.rk:x.di-y.di)||(pr?x.di-y.di:x.rk-y.rk);return +S.cfg.asc?c:-c});n.forEach((d,i)=>d.code=k+(tr=='E'&&!S.cfg.exh?'?':'')+(i+1))}}
+function clubs(list){const U={},K={};list.forEach(t=>{if(t)U[t]=(U[t]||0)+1});
+ Object.keys(U).forEach(t=>{const k=nk(t.replace(/\(.*?\)/g,' ')),c=K[k]=K[k]||{k,nm:[]};c.nm.push(t);const p=t.match(/\(([A-Za-z]{3,6})\)/);if(p)c.pab=p[1].toLowerCase();const w=t.split(' ');if(w.length>2&&/^[A-Z]{3,5}$/.test(w[0]))c.lab=w[0].toLowerCase()});
+ const C=Object.values(K),par={};C.forEach(c=>par[c.k]=c.k);const f=x=>par[x]==x?x:par[x]=f(par[x]),un=(a,b)=>{par[f(a)]=f(b)};
+ C.forEach(a=>C.forEach(b=>{if(a==b)return;if(b.k.length>=8&&a.k.includes(b.k))un(a.k,b.k);if(a.pab&&(b.k==a.pab||a.pab==b.pab))un(a.k,b.k);if(a.lab&&b.k==a.lab)un(b.k,a.k)}));
+ const G={},map={},used=new Set();C.forEach(c=>(G[f(c.k)]=G[f(c.k)]||[]).push(c));
+ Object.values(G).forEach(L=>{const nm={};L.forEach(c=>c.nm.forEach(t=>nm[t]=U[t]));const can=Object.entries(nm).sort((a,b)=>b[1]-a[1]||b[0].length-a[0].length)[0][0].replace(/\s*\(.*?\)/g,'').trim(),pab=(L.find(c=>c.pab)||{}).pab,
+  w=can.replace(/[^A-Za-z0-9 -]/g,'').split(' ').filter(Boolean);let cd=(pab||(w.length>1?w.map(x=>x[0]).join(''):w[0]).replace(/\W/g,'')).toUpperCase().slice(0,5);
+  if(cd.length<3)cd=(cd+w[0].replace(/\W/g,'').toUpperCase()).slice(0,5);const b=cd;let i=2;while(used.has(cd))cd=b.slice(0,4)+i++;used.add(cd);L.forEach(c=>c.nm.forEach(t=>map[t]={n:can,c:cd}))});return map}
+function run(){save();if(!S.rows.length){D=null;return draw()}
+ const m=S.map,o=m.dob!=null?dcol(m.dob):'dm',cell=(r,k)=>m[k]==null?'':String(r[m[k]]??'').trim().replace(/\s+/g,' '),today=new Date(),ref=S.cfg.ref?new Date(S.cfg.ref+'T00:00:00Z'):today,cm=clubs(S.rows.map(r=>cell(r,'club')));
+ const E=S.rows.map((r,i)=>{const name=cell(r,'name'),gn=g(cell(r,'gender')),cl=cm[cell(r,'club')]||{n:'(tanpa klub)',c:'—'};return{i,name,gn,cl,dv:pd(cell(r,'div')),db:m.dob!=null?pdt(r[m.dob],o):null,ph:nph(cell(r,'phone')),pk:nk(name)+'|'+gn+'|'+cl.c,fl:[]}});
+ const P={};E.forEach(e=>{const p=P[e.pk]=P[e.pk]||{name:e.name,d:{}};if(e.db&&e.db<=today){const k=iso(e.db);p.d[k]=(p.d[k]||0)+1}});
+ Object.values(P).forEach(p=>{const ks=Object.keys(p.d).sort((a,b)=>p.d[b]-p.d[a]);p.dob=ks[0]?new Date(ks[0]+'T00:00:00Z'):null;p.conf=ks.length>1});
+ const seen=new Set(),dv={};
+ E.forEach(e=>{const p=P[e.pk];e.dob=p.dob||e.db;
+  if(!e.name)e.fl.push('Nama kosong');else{if(/\d/.test(e.name))e.fl.push('Angka pada nama');if(!/ /.test(e.name))e.fl.push('Nama 1 kata')}
+  if(!e.gn)e.fl.push('Gender tidak dikenal');if(e.dv.st=='?')e.fl.push('Divisi tidak dikenal');if(e.db&&e.db>today)e.fl.push('Tgl lahir di masa depan');if(p.conf)e.fl.push('Tgl lahir bertentangan antar-entri');
+  if(e.ph.bad)e.fl.push('No. WA tidak valid');if(e.dob&&e.dv.rk&&age(e.dob,ref)>=e.dv.rk)e.fl.push('Usia melebihi batas kelas');
+  const dk=e.pk+'|'+e.dv.k;if(seen.has(dk)){e.fl.push('Duplikat (tidak dihitung)');e.dup=1}seen.add(dk);e.ok=!e.dup&&!!e.name&&!!e.gn&&e.dv.st!='?'});
+ E.filter(e=>e.ok).forEach(e=>{const d=dv[e.dv.k]=dv[e.dv.k]||Object.assign({},e.dv,{n:{M:0,W:0}});d.n[e.gn]++});codes(dv);E.forEach(e=>{e.dv=dv[e.dv.k]||e.dv});
+ D={E,P,dv,dl:Object.values(dv).sort((a,b)=>'RBCNH'.indexOf(a.st)-'RBCNH'.indexOf(b.st)||a.code.localeCompare(b.code,'id',{numeric:true}))};draw()}
+/* ---- bantalan ---- */
+const butts=(n,d)=>{const k=Math.ceil(n/4);if(d.tr=='P')return[k,0,0,0];return[k,n>=2?Math.ceil(Math.min(n,8)/2):0,n>=2?Math.min(n,4):0,n>=2?Math.min(n,S.cfg.bronze?4:2):0]};
+const ca=k=>{const[dk,gn]=k.split('#'),d=D.dv[dk];return{d,g:gn,n:d?d.n[gn]:0}};
+function sres(s){const rows=s.it.map(ca).filter(c=>c.n>0).map(c=>({c,b:butts(c.n,c.d)})),tot=[0,1,2,3].map(j=>rows.reduce((a,r)=>a+r.b[j],0));return{rows,tot,need:Math.max(0,...tot)}}
+/* ---- tampilan ---- */
+const T=(h,r,cl)=>`<table><tr>${h.map((x,i)=>`<th class="${cl&&cl[i]?'n':''}">${x}</th>`).join('')}</tr>${r.map(x=>`<tr${x.t?' class="t"':''}>${(x.t?x.c:x).map((c,i)=>`<td class="${cl&&cl[i]?'n':''}">${c}</td>`).join('')}</tr>`).join('')}</table>`;
+function draw(){const has=!!D;$('#mp').hidden=$('#is').hidden=$('#tb').hidden=!has;if(!has){$('#t1').innerHTML=$('#t2').innerHTML='<div class="card m">Impor data terlebih dahulu di tab Data.</div>';return}
+ $('#mp').innerHTML='<b>2. Pemetaan kolom (otomatis — ubah bila keliru)</b><div class="g">'+Object.keys(RL).map(r=>`<label style="display:block">${RL[r]}<select data-r="${r}" style="width:100%"><option value="">—</option>${S.hdr.map((h,i)=>`<option value="${i}"${S.map[r]==i?' selected':''}>${esc(h||'(kolom '+(i+1)+')')}</option>`).join('')}</select></label>`).join('')+'</div>';
+ const F={};D.E.forEach(e=>e.fl.forEach(f=>(F[f]=F[f]||[]).push(e.name||'(baris '+(e.i+1)+')')));
+ $('#is').innerHTML=`<b>3. Perlu ditinjau</b>${Object.keys(F).length?Object.entries(F).map(([f,l])=>`<details><summary>${esc(f)} <b>(${l.length})</b></summary><div class="m">${l.slice(0,40).map(esc).join('; ')}${l.length>40?' …':''}</div></details>`).join(''):'Tidak ada temuan.'}`;
+ $('#tb').innerHTML='<b>Data rapi</b>'+T(['No','Nama','Divisi','L/P','Klub','Kode','Lahir','WA','Catatan'],D.E.slice(0,600).map((e,i)=>[i+1,esc(e.name),e.dv.code||'?',e.gn||'?',esc(e.cl.n),e.cl.c,e.dob?iso(e.dob):'',e.ph.v,esc(e.fl.join('; '))]));
+ const V=D.E.filter(e=>e.ok),U=new Set(V.map(e=>e.pk)),uq={M:new Set,W:new Set},ec={M:0,W:0},cnt={},cl={};V.forEach(e=>{uq[e.gn].add(e.pk);ec[e.gn]++;cnt[e.pk]=(cnt[e.pk]||0)+1;const c=cl[e.cl.c]=cl[e.cl.c]||{n:e.cl.n,p:new Set,e:0};c.p.add(e.pk);c.e++});
+ const dist={};Object.values(cnt).forEach(n=>{const k=n>3?'4+':n;dist[k]=(dist[k]||0)+1});
+ $('#t1').innerHTML=`<div class="card"><div class="g">${[['Baris data',D.E.length],['Kepesertaan valid',V.length],['Peserta unik',U.size],['Klub/sekolah',Object.keys(cl).length],['Kategori (divisi×gender)',D.dl.reduce((a,d)=>a+(d.n.M>0)+(d.n.W>0),0)]].map(([a,b])=>`<div class="k"><b>${b}</b><span>${a}</span></div>`).join('')}</div></div>
+ <div class="card sc"><b>Kepesertaan per divisi per gender</b>${T(['Kode','Divisi','Putra','Putri','Total'],[...D.dl.map(d=>[d.code,d.label,d.n.M,d.n.W,d.n.M+d.n.W]),{t:1,c:['','Total',ec.M,ec.W,V.length]}],[0,0,1,1,1])}</div>
+ <div class="card sc"><b>Per gender</b>${T(['Gender','Kepesertaan','Nama unik'],[['Putra',ec.M,uq.M.size],['Putri',ec.W,uq.W.size],{t:1,c:['Total',V.length,U.size]}],[0,1,1])}</div>
+ <div class="card sc"><b>Peserta multi-kategori</b>${T(['Jumlah kategori per orang','Jumlah orang'],Object.entries(dist).sort().map(([a,b])=>[a,b]),[0,1])}</div>
+ <div class="card sc"><b>Klub / sekolah</b>${T(['Klub','Kode','Peserta unik','Kepesertaan'],Object.entries(cl).sort((a,b)=>b[1].p.size-a[1].p.size).map(([c,x])=>[esc(x.n),c,x.p.size,x.e]),[0,0,1,1])}</div>`;
+ plan();for(const[k,v]of[['c-br',S.cfg.bronze],['c-ex',S.cfg.exh]])$('#'+k).checked=!!v;$('#c-as').value=S.cfg.asc;$('#c-pr').value=S.cfg.prim;$('#c-rf').value=S.cfg.ref;$('#c-bt').value=S.cfg.butts||''}
+function plan(){const s=S.ses[S.cur],all=S.ses.map(sres),r=all[S.cur],at=k=>S.ses.findIndex(x=>x.it.includes(k));
+ const conf=(()=>{const c={};s.it.forEach(k=>{const[dk,gn]=k.split('#');D.E.filter(e=>e.ok&&e.dv.k==dk&&e.gn==gn).forEach(e=>(c[e.pk]=c[e.pk]||new Set).add(k))});return Object.entries(c).filter(([p,v])=>v.size>1).map(([p])=>D.P[p].name)})();
+ const chip=(d,gn,l)=>{if(!d.n[gn])return'';const k=d.k+'#'+gn,a=at(k);return`<button class="chip ${a==S.cur?'on':a>=0?'ot':''}" data-k="${k}">${l} ${d.n[gn]}${a>=0&&a!=S.cur?' · S'+(a+1):''}</button>`};
+ const need=all.map(x=>x.need),peak=Math.max(0,...need),bt=+S.cfg.butts;
+ $('#t2').innerHTML=`<div class="tabs">${S.ses.map((x,i)=>`<button data-s="${i}" class="${i==S.cur?'on':''}">${esc(x.n)}</button>`).join('')}<button class="s" id="sa">+ Sesi</button></div>
+ <div class="card"><b>Pilih kategori untuk ${esc(s.n)}</b>${D.dl.map(d=>`<div class="row"><div class="l"><b>${d.code}</b> <small>${esc(d.label)}</small></div>${chip(d,'M','Putra')}${chip(d,'W','Putri')}</div>`).join('')}
+ <p><button class="s" id="sr">Ganti nama</button> ${S.ses.length>1?'<button class="s" id="sd">Hapus sesi</button>':''}</p></div>
+ <div class="card sc"><b>Hasil ${esc(s.n)}: <span style="color:var(--pri)">${r.need} bantalan</span></b>${r.rows.length?T(['Kategori','n','Kual.','1/4','1/2','Final+P'],[...r.rows.map(x=>[x.c.d.code+' '+(x.c.g=='M'?'Putra':'Putri'),x.c.n,...x.b]),{t:1,c:['Total babak','',...r.tot]}],[0,1,1,1,1,1]):'<span class="m">Klik kategori di atas.</span>'}
+ ${conf.length?`<div class="w">⚠ Bentrok: ${conf.length} orang ada di ≥2 kategori pada sesi ini: ${conf.slice(0,12).map(esc).join(', ')}</div>`:''}${bt&&r.need?`<p>Dengan ${bt} bantalan tersedia: <b>${Math.ceil(r.need/bt)} gelombang</b></p>`:''}</div>
+ <div class="card sc"><b>Ringkasan semua sesi</b>${T(['Sesi','Kategori','Kebutuhan bantalan'],[...S.ses.map((x,i)=>[esc(x.n),x.it.length,need[i]]),{t:1,c:['Puncak (disiapkan di lapangan)','',peak]}],[0,1,1])}
+ <p class="m">Belum dijadwalkan: ${D.dl.reduce((a,d)=>a+['M','W'].filter(x=>d.n[x]&&at(d.k+'#'+x)<0).length,0)} kategori. Kualifikasi 4 archer/bantalan, 1/4 Final 2, 1/2 Final &amp; Final 1; Pemula hanya kualifikasi; tiap kategori/gender memakai bantalan sendiri.</p></div>`}
+function exp(){const wb=XLSX.utils.book_new(),A=(n,a)=>XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(a),n),V=D.E.filter(e=>e.ok);
+ A('Data Atlet',[['No.','Nama','Divisi (kode)','Gender (M/W)','Club/Country','Kode Club','Tgl Lahir','No. WA'],...V.map((e,i)=>[i+1,e.name,e.dv.code,e.gn,e.cl.n,e.cl.c,e.dob?iso(e.dob):'',e.ph.v])]);
+ A('Kamus Divisi',[['Kode','Divisi','Gaya','Jarak (M)'],...D.dl.map(d=>[d.code,d.label,d.st,d.di])]);A('Rekap',[['Kode','Divisi','Putra (M)','Putri (W)','Total'],...D.dl.map(d=>[d.code,d.label,d.n.M,d.n.W,d.n.M+d.n.W])]);
+ const B=[['Sesi','Kode','Divisi','Gender','n','Kualifikasi','1/4 Final','1/2 Final','Final+Perunggu']];S.ses.forEach(s=>sres(s).rows.forEach(r=>B.push([s.n,r.c.d.code,r.c.d.label,r.c.g,r.c.n,...r.b])));A('Bantalan per Sesi',B);XLSX.writeFile(wb,'ArcheryDesk.xlsx')}
+/* ---- event ---- */
+$('#f').onchange=async e=>{const f=e.target.files[0];if(!f)return;const wb=XLSX.read(await f.arrayBuffer(),{type:'array'});let best=[];wb.SheetNames.forEach(n=>{const a=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,raw:true,defval:''});if(a.length>best.length)best=a});load(best)};
+$('#bp').onclick=()=>{const t=$('#pt').value;if(t.trim())load(parseText(t))};
+$('#bc').onclick=()=>{if(confirm('Hapus semua data di perangkat ini?')){S.rows=[];S.hdr=[];S.ses=[{n:'Sesi 1',it:[]}];S.cur=0;run()}};
+$('#mp').onchange=e=>{S.map[e.target.dataset.r]=e.target.value===''?null:+e.target.value;run()};
+$('#t2').onclick=e=>{const b=e.target.closest('button');if(!b)return;const s=S.ses[S.cur];
+ if(b.dataset.k){const k=b.dataset.k;S.ses.forEach(x=>x.it=x.it.filter(y=>y!=k||x!=s&&false));if(s.it.includes(k))s.it=s.it.filter(y=>y!=k);else{S.ses.forEach(x=>x.it=x.it.filter(y=>y!=k));s.it.push(k)}}
+ else if(b.dataset.s)S.cur=+b.dataset.s;else if(b.id=='sa'){S.ses.push({n:'Sesi '+(S.ses.length+1),it:[]});S.cur=S.ses.length-1}
+ else if(b.id=='sr'){const n=prompt('Nama sesi',s.n);if(n)s.n=n}else if(b.id=='sd'){S.ses.splice(S.cur,1);S.cur=0}else return;save();plan()};
+$('#ex').onclick=()=>D?exp():alert('Belum ada data.');
+const cf=(id,fn)=>$(id).onchange=e=>{fn(e.target);run()};
+cf('#c-br',t=>S.cfg.bronze=+t.checked);cf('#c-ex',t=>S.cfg.exh=+t.checked);cf('#c-as',t=>S.cfg.asc=+t.value);cf('#c-pr',t=>S.cfg.prim=t.value);cf('#c-rf',t=>S.cfg.ref=t.value);cf('#c-bt',t=>S.cfg.butts=+t.value||0);
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x==b));for(let i=0;i<4;i++)$('#t'+i).hidden=i!=b.dataset.t;scrollTo(0,0)});
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+run();
+</script></body></html>
