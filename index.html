@@ -1,43 +1,54 @@
 <!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>ArcheryDesk</title>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1F4E78"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
 <style>
-:root{--bg:#f6f7f9;--fg:#1b1f24;--card:#fff;--mut:#667085;--pri:#1F4E78;--ln:#d9dde3;--hi:#dbeafe;--wn:#fff4e0}
-@media(prefers-color-scheme:dark){:root{--bg:#14171a;--fg:#e8eaed;--card:#1e2226;--mut:#9aa3ad;--pri:#6aa9e0;--ln:#343a41;--hi:#1d3a5c;--wn:#3a2d12}}
-*{box-sizing:border-box}body{margin:0;font:15px/1.45 system-ui,sans-serif;background:var(--bg);color:var(--fg);padding:env(safe-area-inset-top) 0 78px}
-header{padding:12px 16px;font-weight:700;color:var(--pri);font-size:18px}main{max-width:1000px;margin:auto;padding:0 12px}
-.card{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:12px;margin:0 0 12px}.card>b{display:block;margin-bottom:6px}
-.sc{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:5px 8px;border-bottom:1px solid var(--ln);text-align:left;white-space:nowrap}th{color:var(--mut);font-weight:600}td.n,th.n{text-align:right}tr.t td{font-weight:700}
-button,select,input,textarea{font:inherit;color:inherit}button{background:var(--pri);color:#fff;border:0;border-radius:8px;padding:8px 12px;min-height:40px;cursor:pointer}button.s{background:transparent;color:var(--pri);border:1px solid var(--pri)}
-textarea{width:100%;height:70px;background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:8px;margin:8px 0}select,input[type=date],input[type=number]{background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:6px;min-height:36px}
-.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}.k{background:var(--bg);border-radius:10px;padding:8px 10px}.k b{display:block;font-size:22px}.k span{color:var(--mut);font-size:12px}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.tabs button{background:var(--card);color:var(--fg);border:1px solid var(--ln)}.tabs button.on{background:var(--pri);color:#fff}
-.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:6px 0;border-bottom:1px solid var(--ln)}.row .l{flex:1;min-width:170px}.row small{color:var(--mut)}
-.chip{background:var(--card);color:var(--fg);border:1px solid var(--ln);min-height:36px;padding:4px 10px}.chip.on{background:var(--pri);color:#fff}.chip.ot{opacity:.5}
-.w{background:var(--wn);border-radius:8px;padding:8px;margin:6px 0}details{margin:4px 0}summary{cursor:pointer}.m{color:var(--mut)}
-nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom)}nav button{flex:1;background:none;color:var(--mut);border-radius:0;min-height:52px}nav button.on{color:var(--pri);font-weight:700}
-label{display:flex;gap:8px;align-items:center;margin:6px 0}[hidden]{display:none!important}
-</style></head><body>
-<header>🏹 ArcheryDesk <span class="m" style="font-weight:400;font-size:12px">data peserta &amp; kalkulator bantalan</span></header>
+:root{--bg:#f3eee3;--fg:#1c2a22;--card:#fffdf8;--mut:#6b7468;--pri:#1f4d3a;--onp:#fff;--hero:#1f4d3a;--ac:#c8452f;--ln:#e5dfd0;--wn:#fdeccf;--sh:0 1px 2px rgba(28,42,34,.06),0 8px 22px rgba(28,42,34,.08);--m:#2a6fa8;--w:#b4477a}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1913;--fg:#ece8dc;--card:#17251d;--mut:#9aa89c;--pri:#7fc6a0;--onp:#0e1913;--hero:#0b2a1c;--ac:#ef7a62;--ln:#263a2d;--wn:#3b2f14;--sh:0 1px 2px #0007;--m:#6fb0e6;--w:#e48ab6}}
+*{box-sizing:border-box}body{margin:0;font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--fg);padding-bottom:100px}
+h1,.big,.k b,.ring b{font-family:ui-serif,Georgia,"Times New Roman",serif}
+.hero{position:relative;overflow:hidden;background:var(--hero);color:#fff;padding:calc(env(safe-area-inset-top) + 24px) 20px 58px;border-radius:0 0 30px 30px}
+.hero:after{content:"";position:absolute;right:-70px;top:-60px;width:250px;height:250px;border-radius:50%;background:radial-gradient(circle,#f2c94c 0 12%,#d64545 12% 26%,#3b82c4 26% 40%,#222 40% 54%,#f5f5f5 54% 68%,transparent 68%);opacity:.92}
+.hero h1{margin:0;font-size:30px;letter-spacing:-.5px}.hero p{margin:4px 0 0;max-width:62%;opacity:.85;font-size:13px}
+main{max-width:1000px;margin:-32px auto 0;padding:0 12px;position:relative;z-index:1}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:18px;padding:14px;margin:0 0 12px;box-shadow:var(--sh)}.card>b{display:block;margin-bottom:8px;font-size:16px}
+summary{cursor:pointer;list-style:none}summary::-webkit-details-marker{display:none}
+.sc{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 9px;border-bottom:1px solid var(--ln);text-align:left;white-space:nowrap}th{color:var(--mut);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px}td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}tr.t td{font-weight:700;background:var(--bg)}
+button,select,input,textarea{font:inherit;color:inherit}button{background:var(--pri);color:var(--onp);border:0;border-radius:12px;padding:9px 14px;min-height:42px;cursor:pointer;font-weight:600}button:active{transform:scale(.97)}button.s{background:transparent;color:var(--pri);border:1.5px solid var(--pri)}
+textarea{width:100%;height:76px;background:var(--bg);border:1px dashed var(--ln);border-radius:12px;padding:10px;margin:10px 0}select,input[type=date],input[type=number]{background:var(--bg);border:1px solid var(--ln);border-radius:10px;padding:6px 8px;min-height:38px}
+.drop{display:block;border:2px dashed var(--pri);border-radius:14px;padding:18px;text-align:center;color:var(--pri);font-weight:600;cursor:pointer;background:var(--bg)}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}.k{background:var(--bg);border-radius:14px;padding:10px 12px}.k b{display:block;font-size:28px;color:var(--pri);line-height:1.1}.k span{color:var(--mut);font-size:12px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.tabs button{background:var(--card);color:var(--fg);border:1px solid var(--ln);border-radius:999px;min-height:38px;padding:6px 14px;font-weight:500}.tabs button.on{background:var(--pri);color:var(--onp);border-color:var(--pri)}
+.seg{display:flex;background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:4px;margin-bottom:12px;box-shadow:var(--sh)}.seg button{flex:1;background:none;color:var(--mut)}.seg button.on{background:var(--pri);color:var(--onp)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--ln)}.row .l{flex:1;min-width:160px}.row small{color:var(--mut)}.row b{display:inline-block;min-width:38px;color:var(--ac)}
+.chip{--c:var(--pri);background:var(--card);color:var(--fg);border:1.5px solid var(--c);border-radius:999px;min-height:38px;padding:4px 14px;font-weight:600}.chip[data-g=M]{--c:var(--m)}.chip[data-g=W]{--c:var(--w)}.chip.on{background:var(--c);color:#fff}.chip.ot{opacity:.45}
+.stat{display:flex;gap:16px;align-items:center}.ring{flex:none;width:92px;height:92px;border-radius:50%;display:grid;place-content:center;text-align:center;background:radial-gradient(circle,var(--card) 0 58%,transparent 59%),conic-gradient(var(--ac),#f2c94c,var(--m),var(--ac))}.ring b{font-size:32px;line-height:1}.ring span{font-size:10px;color:var(--mut)}
+.big{color:var(--ac);font-size:20px;margin-left:6px}.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:8px}.rules>div{background:var(--bg);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;font-size:13px}.rules label{margin:0}
+.w{background:var(--wn);border-radius:12px;padding:10px;margin:8px 0}details{margin:4px 0}.m{color:var(--mut)}.empty{text-align:center;padding:30px 16px}.empty div{font-size:44px}
+nav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));max-width:520px;margin:auto;display:flex;background:var(--card);border:1px solid var(--ln);border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:4px;z-index:5}nav button{flex:1;background:none;color:var(--mut);border-radius:18px;min-height:52px;font-size:12px;line-height:1.2;padding:4px}nav button b{display:block;font-size:18px}nav button.on{background:var(--pri);color:var(--onp)}
+label{display:flex;gap:8px;align-items:center;margin:8px 0}[hidden]{display:none!important}
+</style></style></head><body>
+<div class="hero"><h1>ArcheryDesk</h1><p>Rapikan data pendaftaran &amp; hitung kebutuhan bantalan — langsung di HP, tanpa server.</p></div>
 <main>
-<section id="t0"><div class="card"><b>1. Impor data</b><input type="file" id="f" accept=".xlsx,.xls,.csv,.tsv,.txt"><textarea id="pt" placeholder="…atau tempel data dari Excel / Google Sheets di sini"></textarea><button id="bp">Proses tempelan</button> <button class="s" id="bc">Hapus data</button><p class="m" style="margin:8px 0 0">Data diproses di perangkat ini, tidak dikirim ke server.</p></div>
+<section id="t0"><div class="card"><b>1. Impor data</b><label class="drop"><input type="file" id="f" hidden accept=".xlsx,.xls,.csv,.tsv,.txt">📂 Pilih file XLSX / CSV</label><textarea id="pt" placeholder="…atau tempel data dari Excel / Google Sheets di sini"></textarea><button id="bp">Proses tempelan</button> <button class="s" id="bc">Hapus data</button><p class="m" style="margin:8px 0 0">Data diproses di perangkat ini, tidak dikirim ke server.</p></div>
 <div class="card" id="mp" hidden></div><div class="card" id="is" hidden></div><div class="card sc" id="tb" hidden></div></section>
 <section id="t1" hidden></section><section id="t2" hidden></section>
 <section id="t3" hidden><div class="card"><b>Ekspor</b><button id="ex">Unduh XLSX</button><p class="m">Sheet: Data Atlet, Kamus Divisi, Rekap, Bantalan per Sesi.</p></div>
 <div class="card"><b>Pengaturan</b>
-<label><input type="checkbox" id="c-br"> Perebutan perunggu bersamaan Final (Final = hingga 4 archer)</label>
+<label><input type="checkbox" id="c-pe"> Pemula ikut babak eliminasi (default: kualifikasi saja)</label>
+<label><input type="checkbox" id="c-ex"> Izinkan tingkat pada Exhibition (RE1, RE2)</label>
 <label>Nomor kode 1 = <select id="c-as"><option value="0">usia/jenjang tertinggi, jarak terjauh</option><option value="1">usia/jenjang terendah, jarak terdekat</option></select></label>
 <label>Urut utama <select id="c-pr"><option value="age">Usia → Jarak</option><option value="dist">Jarak → Usia</option></select></label>
-<label><input type="checkbox" id="c-ex"> Izinkan tingkat pada Exhibition (RE1, RE2)</label>
 <label>Tanggal acuan usia <input type="date" id="c-rf"></label>
-<label>Bantalan tersedia <input type="number" id="c-bt" min="0" style="width:90px"></label></div></section>
+<p class="m">Aturan archer per bantalan ada di tab Planner.</p></div></section>
 </main>
-<nav><button data-t="0" class="on">Data</button><button data-t="1">Rekap</button><button data-t="2">Planner</button><button data-t="3">Ekspor</button></nav>
+<nav><button data-t="0" class="on"><b>📋</b>Data</button><button data-t="1"><b>📊</b>Rekap</button><button data-t="2"><b>🎯</b>Planner</button><button data-t="3"><b>⬇️</b>Ekspor</button></nav>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const SN={R:'Recurve',B:'Barebow',C:'Compound',N:'Nasional',H:'Horsebow'},RL={name:'Nama',gender:'Gender',dob:'Tgl lahir',club:'Klub/Sekolah',div:'Divisi',phone:'WhatsApp'};
-let S={hdr:[],rows:[],map:{},cfg:{asc:0,prim:'age',bronze:1,ref:'',butts:0,exh:0},ses:[{n:'Sesi 1',it:[]}],cur:0},D=null;
+const DC={asc:0,prim:'age',ref:'',exh:0,pe:0,on16:0,on8:1,bq:0,be:0,per:{q:4,r16:2,r8:2,r4:1,f:1}};let S={hdr:[],rows:[],map:{},cfg:{...DC},P:null,ph:'q'},D=null;
+function rsP(){S.P={q:{ses:[{n:'Kualifikasi 1',it:[]}],cur:0},e:{ses:[{n:'Eliminasi 1',it:[]}],cur:0}}}
 try{const x=JSON.parse(localStorage.getItem('ad')||'null');if(x)S=Object.assign(S,x)}catch(e){}
+S.cfg=Object.assign({},DC,S.cfg);S.cfg.per=Object.assign({},DC.per,S.cfg.per);if(!S.P)rsP();
 const save=()=>{try{localStorage.setItem('ad',JSON.stringify(S))}catch(e){}};
 const nk=s=>s.toLowerCase().replace(/[^\p{L}\p{N} ]/gu,' ').replace(/\s+/g,' ').trim(),iso=d=>d.toISOString().slice(0,10);
 const g=v=>{v=String(v).trim().toLowerCase();return /^(m|l|man|men|male|laki.*|pria|putra|boy)$/.test(v)?'M':/^(w|f|p|woman|women|female|perempuan|wanita|putri|girl)$/.test(v)?'W':null};
@@ -46,7 +57,7 @@ const age=(d,r)=>{let a=r.getUTCFullYear()-d.getUTCFullYear();if(r.getUTCMonth()
 const SYN={name:/nama|full ?name|^name|athlete|atlet|peserta/i,gender:/gender|kelamin|^jk$|^sex/i,dob:/birth|lahir|dob|^ttl/i,club:/club|klub|kontingen|sekolah|school|contingent|^team|asal/i,div:/division|divisi|kategori|category|^kelas/i,phone:/whats|^wa|^hp|telepon|phone|kontak/i};
 function parseText(t){const L=t.replace(/\r/g,'').split('\n').filter(l=>l.trim()),d=['\t',';',','].map(c=>[c,L.slice(0,5).join('').split(c).length]).sort((a,b)=>b[1]-a[1])[0][0];return L.map(l=>l.split(d))}
 function load(a){a=a.map(r=>r.map(c=>c==null?'':c));const f=r=>r.filter(x=>String(x).trim()).length;let h=a.findIndex((r,i)=>f(r)>=3&&a[i+1]&&f(a[i+1])>=3&&r.filter(x=>typeof x=='string'&&isNaN(x)).length>=3);if(h<0)h=0;
- S.hdr=a[h].map(x=>String(x).trim());S.rows=a.slice(h+1).filter(r=>f(r));S.map=autoMap();S.ses=[{n:'Sesi 1',it:[]}];S.cur=0;run()}
+ S.hdr=a[h].map(x=>String(x).trim());S.rows=a.slice(h+1).filter(r=>f(r));S.map=autoMap();rsP();run()}
 function autoMap(){const m={},u=new Set(),H=S.hdr;
  for(const r in SYN){const i=H.findIndex((h,i)=>!u.has(i)&&SYN[r].test(h));if(i>=0){m[r]=i;u.add(i)}}
  const fr=(i,f)=>{const c=S.rows.slice(0,200).map(r=>String(r[i]).trim()).filter(Boolean);return c.length?c.filter(f).length/c.length:0};
@@ -90,12 +101,13 @@ function run(){save();if(!S.rows.length){D=null;return draw()}
  E.filter(e=>e.ok).forEach(e=>{const d=dv[e.dv.k]=dv[e.dv.k]||Object.assign({},e.dv,{n:{M:0,W:0}});d.n[e.gn]++});codes(dv);E.forEach(e=>{e.dv=dv[e.dv.k]||e.dv});
  D={E,P,dv,dl:Object.values(dv).sort((a,b)=>'RBCNH'.indexOf(a.st)-'RBCNH'.indexOf(b.st)||a.code.localeCompare(b.code,'id',{numeric:true}))};draw()}
 /* ---- bantalan ---- */
-const butts=(n,d)=>{const k=Math.ceil(n/4);if(d.tr=='P')return[k,0,0,0];return[k,n>=2?Math.ceil(Math.min(n,8)/2):0,n>=2?Math.min(n,4):0,n>=2?Math.min(n,S.cfg.bronze?4:2):0]};
+const ERs=()=>[['r16',16,'1/8'],['r8',8,'1/4'],['r4',4,'1/2'],['f',4,'Final']].filter(r=>r[0]=='r4'||r[0]=='f'||S.cfg['on'+r[0].slice(1)]),cols=ph=>ph=='q'?['Kualifikasi']:ERs().map(r=>r[2]),okd=(d,ph)=>ph=='q'||d.tr!='P'||S.cfg.pe;
+const butts=(n,ph)=>{const p=S.cfg.per;return ph=='q'?[Math.ceil(n/p.q)]:ERs().map(r=>n>=2?Math.ceil(Math.min(n,r[1])/p[r[0]]):0)};
 const ca=k=>{const[dk,gn]=k.split('#'),d=D.dv[dk];return{d,g:gn,n:d?d.n[gn]:0}};
-function sres(s){const rows=s.it.map(ca).filter(c=>c.n>0).map(c=>({c,b:butts(c.n,c.d)})),tot=[0,1,2,3].map(j=>rows.reduce((a,r)=>a+r.b[j],0));return{rows,tot,need:Math.max(0,...tot)}}
+function sres(s,ph){const rows=s.it.map(ca).filter(c=>c.n>0&&okd(c.d,ph)).map(c=>({c,b:butts(c.n,ph)})),tot=cols(ph).map((_,j)=>rows.reduce((a,r)=>a+r.b[j],0));return{rows,tot,need:Math.max(0,...tot)}}
 /* ---- tampilan ---- */
 const T=(h,r,cl)=>`<table><tr>${h.map((x,i)=>`<th class="${cl&&cl[i]?'n':''}">${x}</th>`).join('')}</tr>${r.map(x=>`<tr${x.t?' class="t"':''}>${(x.t?x.c:x).map((c,i)=>`<td class="${cl&&cl[i]?'n':''}">${c}</td>`).join('')}</tr>`).join('')}</table>`;
-function draw(){const has=!!D;$('#mp').hidden=$('#is').hidden=$('#tb').hidden=!has;if(!has){$('#t1').innerHTML=$('#t2').innerHTML='<div class="card m">Impor data terlebih dahulu di tab Data.</div>';return}
+function draw(){const has=!!D;$('#mp').hidden=$('#is').hidden=$('#tb').hidden=!has;if(!has){$('#t1').innerHTML=$('#t2').innerHTML='<div class="card empty"><div>🎯</div><b>Belum ada data</b><p class="m">Buka tab Data, pilih file XLSX/CSV atau tempel dari Sheets. Rekap dan planner terisi otomatis.</p></div>';return}
  $('#mp').innerHTML='<b>2. Pemetaan kolom (otomatis — ubah bila keliru)</b><div class="g">'+Object.keys(RL).map(r=>`<label style="display:block">${RL[r]}<select data-r="${r}" style="width:100%"><option value="">—</option>${S.hdr.map((h,i)=>`<option value="${i}"${S.map[r]==i?' selected':''}>${esc(h||'(kolom '+(i+1)+')')}</option>`).join('')}</select></label>`).join('')+'</div>';
  const F={};D.E.forEach(e=>e.fl.forEach(f=>(F[f]=F[f]||[]).push(e.name||'(baris '+(e.i+1)+')')));
  $('#is').innerHTML=`<b>3. Perlu ditinjau</b>${Object.keys(F).length?Object.entries(F).map(([f,l])=>`<details><summary>${esc(f)} <b>(${l.length})</b></summary><div class="m">${l.slice(0,40).map(esc).join('; ')}${l.length>40?' …':''}</div></details>`).join(''):'Tidak ada temuan.'}`;
@@ -107,34 +119,41 @@ function draw(){const has=!!D;$('#mp').hidden=$('#is').hidden=$('#tb').hidden=!h
  <div class="card sc"><b>Per gender</b>${T(['Gender','Kepesertaan','Nama unik'],[['Putra',ec.M,uq.M.size],['Putri',ec.W,uq.W.size],{t:1,c:['Total',V.length,U.size]}],[0,1,1])}</div>
  <div class="card sc"><b>Peserta multi-kategori</b>${T(['Jumlah kategori per orang','Jumlah orang'],Object.entries(dist).sort().map(([a,b])=>[a,b]),[0,1])}</div>
  <div class="card sc"><b>Klub / sekolah</b>${T(['Klub','Kode','Peserta unik','Kepesertaan'],Object.entries(cl).sort((a,b)=>b[1].p.size-a[1].p.size).map(([c,x])=>[esc(x.n),c,x.p.size,x.e]),[0,0,1,1])}</div>`;
- plan();for(const[k,v]of[['c-br',S.cfg.bronze],['c-ex',S.cfg.exh]])$('#'+k).checked=!!v;$('#c-as').value=S.cfg.asc;$('#c-pr').value=S.cfg.prim;$('#c-rf').value=S.cfg.ref;$('#c-bt').value=S.cfg.butts||''}
-function plan(){const s=S.ses[S.cur],all=S.ses.map(sres),r=all[S.cur],at=k=>S.ses.findIndex(x=>x.it.includes(k));
+ plan();$('#c-ex').checked=!!S.cfg.exh;$('#c-pe').checked=!!S.cfg.pe;$('#c-as').value=S.cfg.asc;$('#c-pr').value=S.cfg.prim;$('#c-rf').value=S.cfg.ref}
+function plan(){const ph=S.ph,Q=S.P[ph],s=Q.ses[Q.cur],C=S.cfg,R={q:S.P.q.ses.map(x=>sres(x,'q')),e:S.P.e.ses.map(x=>sres(x,'e'))},r=R[ph][Q.cur],pq=Math.max(0,...R.q.map(x=>x.need)),pe=Math.max(0,...R.e.map(x=>x.need)),at=k=>Q.ses.findIndex(x=>x.it.includes(k)),bk=ph=='q'?'bq':'be',bt=+C[bk]||0;
  const conf=(()=>{const c={};s.it.forEach(k=>{const[dk,gn]=k.split('#');D.E.filter(e=>e.ok&&e.dv.k==dk&&e.gn==gn).forEach(e=>(c[e.pk]=c[e.pk]||new Set).add(k))});return Object.entries(c).filter(([p,v])=>v.size>1).map(([p])=>D.P[p].name)})();
- const chip=(d,gn,l)=>{if(!d.n[gn])return'';const k=d.k+'#'+gn,a=at(k);return`<button class="chip ${a==S.cur?'on':a>=0?'ot':''}" data-k="${k}">${l} ${d.n[gn]}${a>=0&&a!=S.cur?' · S'+(a+1):''}</button>`};
- const need=all.map(x=>x.need),peak=Math.max(0,...need),bt=+S.cfg.butts;
- $('#t2').innerHTML=`<div class="tabs">${S.ses.map((x,i)=>`<button data-s="${i}" class="${i==S.cur?'on':''}">${esc(x.n)}</button>`).join('')}<button class="s" id="sa">+ Sesi</button></div>
- <div class="card"><b>Pilih kategori untuk ${esc(s.n)}</b>${D.dl.map(d=>`<div class="row"><div class="l"><b>${d.code}</b> <small>${esc(d.label)}</small></div>${chip(d,'M','Putra')}${chip(d,'W','Putri')}</div>`).join('')}
- <p><button class="s" id="sr">Ganti nama</button> ${S.ses.length>1?'<button class="s" id="sd">Hapus sesi</button>':''}</p></div>
- <div class="card sc"><b>Hasil ${esc(s.n)}: <span style="color:var(--pri)">${r.need} bantalan</span></b>${r.rows.length?T(['Kategori','n','Kual.','1/4','1/2','Final+P'],[...r.rows.map(x=>[x.c.d.code+' '+(x.c.g=='M'?'Putra':'Putri'),x.c.n,...x.b]),{t:1,c:['Total babak','',...r.tot]}],[0,1,1,1,1,1]):'<span class="m">Klik kategori di atas.</span>'}
- ${conf.length?`<div class="w">⚠ Bentrok: ${conf.length} orang ada di ≥2 kategori pada sesi ini: ${conf.slice(0,12).map(esc).join(', ')}</div>`:''}${bt&&r.need?`<p>Dengan ${bt} bantalan tersedia: <b>${Math.ceil(r.need/bt)} gelombang</b></p>`:''}</div>
- <div class="card sc"><b>Ringkasan semua sesi</b>${T(['Sesi','Kategori','Kebutuhan bantalan'],[...S.ses.map((x,i)=>[esc(x.n),x.it.length,need[i]]),{t:1,c:['Puncak (disiapkan di lapangan)','',peak]}],[0,1,1])}
- <p class="m">Belum dijadwalkan: ${D.dl.reduce((a,d)=>a+['M','W'].filter(x=>d.n[x]&&at(d.k+'#'+x)<0).length,0)} kategori. Kualifikasi 4 archer/bantalan, 1/4 Final 2, 1/2 Final &amp; Final 1; Pemula hanya kualifikasi; tiap kategori/gender memakai bantalan sendiri.</p></div>`}
-function exp(){const wb=XLSX.utils.book_new(),A=(n,a)=>XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(a),n),V=D.E.filter(e=>e.ok);
+ const sel=k=>`<select data-p="${k}">${[1,2,3,4].map(v=>`<option${C.per[k]==v?' selected':''}>${v}</option>`).join('')}</select>`,
+ chip=(d,gn,l)=>{if(!d.n[gn])return'';const k=d.k+'#'+gn,a=at(k);return`<button class="chip ${a==Q.cur?'on':a>=0?'ot':''}" data-g="${gn}" data-k="${k}">${l} ${d.n[gn]}${a>=0&&a!=Q.cur?' · '+(a+1):''}</button>`},
+ ck=(o,l)=>`<label><input type="checkbox" data-o="${o}"${C[o]?' checked':''}> ${l}</label>`;
+ $('#t2').innerHTML=`<div class="card stat"><div class="ring"><b>${Math.max(pq,pe)}</b><span>bantalan</span></div><div><b>Kebutuhan puncak</b><div class="m">Kualifikasi <b>${pq}</b> · Eliminasi <b>${pe}</b><br>Fase berurutan, bantalan dipakai ulang.</div></div></div>
+ <details class="card" open><summary><b>⚙️ Aturan archer per bantalan</b></summary><div class="rules"><div><span>Kualifikasi</span>${sel('q')}</div><div>${ck('on16','1/8 Final')}${sel('r16')}</div><div>${ck('on8','1/4 Final')}${sel('r8')}</div><div><span>1/2 Final</span>${sel('r4')}</div><div><span>Final (Emas + Perunggu)</span>${sel('f')}</div></div><p class="m" style="margin:8px 0 0">Pilih 1–4 archer per bantalan. Final memuat 4 archer. Matikan 1/8 atau 1/4 bila tidak dipertandingkan.</p></details>
+ <div class="seg"><button data-ph="q" class="${ph=='q'?'on':''}">Kualifikasi</button><button data-ph="e" class="${ph=='e'?'on':''}">Eliminasi</button></div>
+ <div class="tabs">${Q.ses.map((x,i)=>`<button data-s="${i}" class="${i==Q.cur?'on':''}">${esc(x.n)}</button>`).join('')}<button class="s" id="sa">+ Sesi</button></div>
+ <div class="card"><b>Pilih kategori — ${esc(s.n)}</b>${ph=='e'&&!C.pe?'<p class="m" style="margin:0">Divisi Pemula tidak punya eliminasi (ubah di tab Ekspor → Pengaturan).</p>':''}${D.dl.filter(d=>okd(d,ph)).map(d=>`<div class="row"><div class="l"><b>${d.code}</b> <small>${esc(d.label)}</small></div>${chip(d,'M','Putra')}${chip(d,'W','Putri')}</div>`).join('')}
+ <p style="margin:10px 0 0"><button class="s" id="sr">Ganti nama</button> ${Q.ses.length>1?'<button class="s" id="sd">Hapus sesi</button>':''}</p></div>
+ <div class="card sc"><b>Hasil ${esc(s.n)}<span class="big">${r.need} bantalan</span></b>${r.rows.length?T(['Kategori','n',...cols(ph)],[...r.rows.map(x=>[x.c.d.code+' '+(x.c.g=='M'?'Putra':'Putri'),x.c.n,...x.b]),{t:1,c:['Total babak','',...r.tot]}],[0,1,...cols(ph).map(_=>1)]):'<span class="m">Klik kategori di atas.</span>'}
+ ${conf.length?`<div class="w">⚠️ Bentrok: ${conf.length} orang ada di ≥2 kategori pada sesi ini — ${conf.slice(0,12).map(esc).join(', ')}</div>`:''}
+ <label>Bantalan tersedia <input type="number" min="0" data-b="${bk}" value="${bt||''}" style="width:90px"></label>${bt&&r.need?`<p style="margin:0">→ <b>${Math.ceil(r.need/bt)} gelombang</b></p>`:''}</div>
+ <div class="card sc"><b>Ringkasan ${ph=='q'?'Kualifikasi':'Eliminasi'}</b>${T(['Sesi','Kategori','Kebutuhan bantalan'],[...Q.ses.map((x,i)=>[esc(x.n),x.it.length,R[ph][i].need]),{t:1,c:['Puncak '+(ph=='q'?'kualifikasi':'eliminasi'),'',ph=='q'?pq:pe]}],[0,1,1])}<p class="m" style="margin:8px 0 0">Belum dijadwalkan: ${D.dl.filter(d=>okd(d,ph)).reduce((a,d)=>a+['M','W'].filter(x=>d.n[x]&&at(d.k+'#'+x)<0).length,0)} kategori. Tiap kategori &amp; gender memakai bantalan sendiri.</p></div>`}
+function exp(){const wb=XLSX.utils.book_new(),A=(n,a)=>XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(a),n),V=D.E.filter(e=>e.ok),C=S.cfg;
  A('Data Atlet',[['No.','Nama','Divisi (kode)','Gender (M/W)','Club/Country','Kode Club','Tgl Lahir','No. WA'],...V.map((e,i)=>[i+1,e.name,e.dv.code,e.gn,e.cl.n,e.cl.c,e.dob?iso(e.dob):'',e.ph.v])]);
  A('Kamus Divisi',[['Kode','Divisi','Gaya','Jarak (M)'],...D.dl.map(d=>[d.code,d.label,d.st,d.di])]);A('Rekap',[['Kode','Divisi','Putra (M)','Putri (W)','Total'],...D.dl.map(d=>[d.code,d.label,d.n.M,d.n.W,d.n.M+d.n.W])]);
- const B=[['Sesi','Kode','Divisi','Gender','n','Kualifikasi','1/4 Final','1/2 Final','Final+Perunggu']];S.ses.forEach(s=>sres(s).rows.forEach(r=>B.push([s.n,r.c.d.code,r.c.d.label,r.c.g,r.c.n,...r.b])));A('Bantalan per Sesi',B);XLSX.writeFile(wb,'ArcheryDesk.xlsx')}
+ const B=[['Fase','Sesi','Kode','Divisi','Gender','n','Kualifikasi','1/8 Final','1/4 Final','1/2 Final','Final (E+P)']],ids=['r16','r8','r4','f'];
+ ['q','e'].forEach(ph=>S.P[ph].ses.forEach(s=>sres(s,ph).rows.forEach(r=>B.push([ph=='q'?'Kualifikasi':'Eliminasi',s.n,r.c.d.code,r.c.d.label,r.c.g,r.c.n,...(ph=='q'?[r.b[0],'','','','']:['',...ids.map(i=>{const j=ERs().findIndex(x=>x[0]==i);return j<0?'':r.b[j]})])]))));A('Bantalan per Sesi',B);
+ A('Aturan Bantalan',[['Babak','Archer/bantalan','Aktif'],['Kualifikasi',C.per.q,'Ya'],['1/8 Final',C.per.r16,C.on16?'Ya':'Tidak'],['1/4 Final',C.per.r8,C.on8?'Ya':'Tidak'],['1/2 Final',C.per.r4,'Ya'],['Final (Emas+Perunggu)',C.per.f,'Ya']]);XLSX.writeFile(wb,'ArcheryDesk.xlsx')}
 /* ---- event ---- */
 $('#f').onchange=async e=>{const f=e.target.files[0];if(!f)return;const wb=XLSX.read(await f.arrayBuffer(),{type:'array'});let best=[];wb.SheetNames.forEach(n=>{const a=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,raw:true,defval:''});if(a.length>best.length)best=a});load(best)};
 $('#bp').onclick=()=>{const t=$('#pt').value;if(t.trim())load(parseText(t))};
-$('#bc').onclick=()=>{if(confirm('Hapus semua data di perangkat ini?')){S.rows=[];S.hdr=[];S.ses=[{n:'Sesi 1',it:[]}];S.cur=0;run()}};
+$('#bc').onclick=()=>{if(confirm('Hapus semua data di perangkat ini?')){S.rows=[];S.hdr=[];rsP();run()}};
 $('#mp').onchange=e=>{S.map[e.target.dataset.r]=e.target.value===''?null:+e.target.value;run()};
-$('#t2').onclick=e=>{const b=e.target.closest('button');if(!b)return;const s=S.ses[S.cur];
- if(b.dataset.k){const k=b.dataset.k;if(s.it.includes(k))s.it=s.it.filter(y=>y!=k);else{S.ses.forEach(x=>x.it=x.it.filter(y=>y!=k));s.it.push(k)}}
- else if(b.dataset.s)S.cur=+b.dataset.s;else if(b.id=='sa'){S.ses.push({n:'Sesi '+(S.ses.length+1),it:[]});S.cur=S.ses.length-1}
- else if(b.id=='sr'){const n=prompt('Nama sesi',s.n);if(n)s.n=n}else if(b.id=='sd'){S.ses.splice(S.cur,1);S.cur=0}else return;save();plan()};
+$('#t2').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.ph){S.ph=b.dataset.ph;save();return plan()}const Q=S.P[S.ph],s=Q.ses[Q.cur];
+ if(b.dataset.k){const k=b.dataset.k;if(s.it.includes(k))s.it=s.it.filter(y=>y!=k);else{Q.ses.forEach(x=>x.it=x.it.filter(y=>y!=k));s.it.push(k)}}
+ else if(b.dataset.s)Q.cur=+b.dataset.s;else if(b.id=='sa'){Q.ses.push({n:(S.ph=='q'?'Kualifikasi ':'Eliminasi ')+(Q.ses.length+1),it:[]});Q.cur=Q.ses.length-1}
+ else if(b.id=='sr'){const n=prompt('Nama sesi',s.n);if(n)s.n=n}else if(b.id=='sd'){Q.ses.splice(Q.cur,1);Q.cur=0}else return;save();plan()};
+$('#t2').onchange=e=>{const t=e.target,d=t.dataset;if(d.p)S.cfg.per[d.p]=+t.value;else if(d.o)S.cfg[d.o]=+t.checked;else if(d.b)S.cfg[d.b]=+t.value||0;else return;run()};
 $('#ex').onclick=()=>D?exp():alert('Belum ada data.');
 const cf=(id,fn)=>$(id).onchange=e=>{fn(e.target);run()};
-cf('#c-br',t=>S.cfg.bronze=+t.checked);cf('#c-ex',t=>S.cfg.exh=+t.checked);cf('#c-as',t=>S.cfg.asc=+t.value);cf('#c-pr',t=>S.cfg.prim=t.value);cf('#c-rf',t=>S.cfg.ref=t.value);cf('#c-bt',t=>S.cfg.butts=+t.value||0);
+cf('#c-ex',t=>S.cfg.exh=+t.checked);cf('#c-pe',t=>S.cfg.pe=+t.checked);cf('#c-as',t=>S.cfg.asc=+t.value);cf('#c-pr',t=>S.cfg.prim=t.value);cf('#c-rf',t=>S.cfg.ref=t.value);
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x==b));for(let i=0;i<4;i++)$('#t'+i).hidden=i!=b.dataset.t;scrollTo(0,0)});
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 run();
