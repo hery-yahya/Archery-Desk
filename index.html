@@ -48,8 +48,9 @@ th,td{padding:4px 8px}table{font-size:12.5px}.sm{font-size:12px}.br{display:flex
 .ib{width:18px;height:18px;min-height:0;padding:0;border-radius:50%;background:transparent;color:var(--pri);border:1.5px solid var(--pri);font-size:11px;line-height:1;vertical-align:middle;margin-left:6px}.ib::before{content:'i';font-weight:700;font-style:italic}
 .pairs{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:10px}.pairs>.pn{grid-column:1/-1;font-size:12.5px;color:var(--mut)}.pairs>.pn b{color:var(--fg)}.pairs>.card{margin:0}
 @media(min-width:1024px){.pairs>.card{max-height:32vh;overflow:auto}}@media(max-width:1023px){.pairs{display:block}.pairs>.card{margin-bottom:10px}}
+#cfg .br button{flex:1}
 </style></head><body>
-<div class="hero"><h1>ArcheryDesk <small style="font-size:11px;opacity:.6;font-weight:400">v7.4</small></h1><p>Rapikan data pendaftaran &amp; hitung kebutuhan bantalan — langsung di HP, tanpa server.</p></div>
+<div class="hero"><h1>ArcheryDesk <small style="font-size:11px;opacity:.6;font-weight:400">v7.5</small></h1><p>Rapikan data pendaftaran &amp; hitung kebutuhan bantalan — langsung di HP, tanpa server.</p></div>
 <main class="app">
 <aside>
 <div class="card" data-v="0"><b>1. Impor data</b><label class="drop"><input type="file" id="f" hidden accept=".xlsx,.xls,.csv,.tsv,.txt">📂 Pilih file XLSX / CSV</label><textarea id="pt" placeholder="…atau tempel data dari Excel / Google Sheets di sini"></textarea><div class="br"><button id="bp">Proses tempelan</button><button class="s" id="bc">Hapus data</button></div><p class="m sm" style="margin:8px 0 0">Data diproses di perangkat ini, tidak dikirim ke server.</p></div>
@@ -61,7 +62,7 @@ th,td{padding:4px 8px}table{font-size:12.5px}.sm{font-size:12px}.br{display:flex
 <label>Nomor kode 1 = <select id="c-as"><option value="0">usia tertinggi / jarak terjauh</option><option value="1">usia terendah / jarak terdekat</option></select></label>
 <label>Urut utama <select id="c-pr"><option value="age">Usia → Jarak</option><option value="dist">Jarak → Usia</option></select></label>
 <label>Tanggal acuan usia <input type="date" id="c-rf"></label>
-<button id="ex" style="width:100%;margin-top:6px">⬇️ Unduh XLSX</button></div>
+<button id="ex" style="width:100%;margin-top:6px">⬇️ Unduh XLSX</button><div class="br"><button class="s" id="sv">💾 Simpan proyek</button><button class="s" id="op">📂 Buka proyek</button></div><input type="file" id="pf" hidden accept=".archerydesk,.json,application/json"><p class="m sm" style="margin:6px 0 0">Proyek (.archerydesk) menyimpan data, semua plan &amp; sesi, dan memuat data pribadi peserta.</p></div>
 </aside>
 <section id="view"><div class="seg" id="vt"><button data-t="0" class="on">📋 Data</button><button data-t="1">📊 Rekap</button><button data-t="2">🎯 Planner</button></div>
 <div id="v0" data-v="0"></div><div id="v1" data-v="1"></div><div id="v2" data-v="2"></div></section>
@@ -204,7 +205,7 @@ function plan(){const cmp=[];eachPlan(p=>{const q=Math.max(0,...S.P.q.ses.map(x=
  <div class="card sc">${HD('Ringkasan '+nP,'t-sum')}${T(['Sesi','Kategori','Kebutuhan bantalan'],[...Q.ses.map((x,i)=>[esc(x.n),x.it.length,R[ph][i].need]),{t:1,c:['Puncak '+nP.toLowerCase(),'',ph=='q'?pq:pe]}],[0,1,1],'t-sum')}<p class="m sm" style="margin:6px 0 0">Belum dijadwalkan: ${D.dl.filter(d=>okd(d,ph)).reduce((a,d)=>a+['M','W'].filter(x=>d.n[x]&&at(d.k+'#'+x)<0).length,0)} kategori. Tiap kategori &amp; gender memakai bantalan sendiri.</p></div><div class="card sc">${HD('Perbandingan plan','t-cmp')}${T(['Plan','Kualifikasi','Eliminasi','Puncak'],cmp.map((c,i)=>[(i==S.pi?'▶ ':'')+esc(c[0]),c[1],c[2],c[3]]),[0,1,1,1],'t-cmp')}</div></div>
  <table id="t-rcpall" style="position:fixed;left:-9999px">${Q.ses.map((x,i)=>{const r=R[ph][i],j=Math.max(0,r.tot.indexOf(r.need));return TT(x.n+(ph=='e'&&r.rows.length?' (bantalan pada babak '+ER[j][2]+')':''))+rcpT(x,ph,r)}).join(SPC)}</table>`}
 function exp(){const wb=XLSX.utils.book_new(),A=(n,a)=>XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(a),n),V=D.E.filter(e=>e.ok),C=S.cfg;
- A('Data Atlet',[['No.','Nama','Divisi (kode)','Gender (M/W)','Club/Country','Kode Club','Tgl Lahir','No. WA'],...V.map((e,i)=>[i+1,e.name,e.dv.code,e.gn,e.cl.n,e.cl.c,e.dob?iso(e.dob):'',e.ph.v])]);
+ A('Data Atlet',[['No.','Nama','Sesi Kualifikasi','Divisi (kode)','Gender (M/W)','Club/Country','Kode Club','Tgl Lahir','No. WA'],...V.map((e,i)=>[i+1,e.name,S.P.q.ses.findIndex(x=>x.it.includes(e.dv.k+'#'+e.gn))+1||'',e.dv.code,e.gn,e.cl.n,e.cl.c,e.dob?iso(e.dob):'',e.ph.v])]);
  A('Kamus Divisi',[['Kode','Divisi','Gaya','Jarak (M)'],...D.dl.map(d=>[d.code,d.label,d.st,d.di])]);A('Rekap',[['Kode','Divisi','Putra (M)','Putri (W)','Total'],...D.dl.map(d=>[d.code,d.label,d.n.M,d.n.W,d.n.M+d.n.W])]);
  const B=[['Plan','Fase','Sesi','Kode','Divisi','Gender','n','Mulai eliminasi','Kualifikasi','1/8 Final','1/4 Final','1/2 Final','Final (E+P)']],AR=[['Plan','Babak','Archer/bantalan','Awal default']];
  eachPlan(p=>{['q','e'].forEach(ph=>S.P[ph].ses.forEach(s=>sres(s,ph).rows.forEach(x=>B.push([p.n,ph=='q'?'Kualifikasi':'Eliminasi',s.n,x.c.d.code,x.c.d.label,x.c.g,x.c.n,ph=='q'?'':ER.find(r=>r[0]==stOf(x.c.d))[2],...(ph=='q'?[x.b[0],'','','','']:['',...x.b.map(v=>v||'')])]))));const K=S.cfg;AR.push([p.n,'Kualifikasi',K.per.q,'Ya'],[p.n,'1/8 Final',K.per.r16,K.on16?'Ya':'Tidak'],[p.n,'1/4 Final',K.per.r8,K.on8?'Ya':'Tidak'],[p.n,'1/2 Final',K.per.r4,'Ya'],[p.n,'Final (Emas+Perunggu)',K.per.f,'Ya'])});
@@ -232,6 +233,17 @@ function tipOpen(b){const t=TIPS[b.dataset.tip],el=$('#tip');if(!t)return;el.inn
 document.addEventListener('click',e=>{const b=e.target.closest('[data-tip]'),tp=$('#tip');if(b){if(!tp.hidden&&tp.dataset.k==b.dataset.tip)tp.hidden=true;else tipOpen(b);return}if(e.target.closest('#tc')){const t=TIPS[tp.dataset.k];if(t)copyTxt(t.t+'\n'+t.l.join('\n'))}else if(!e.target.closest('#tip'))tp.hidden=true});
 document.addEventListener('keydown',e=>{if(e.key=='Escape')$('#tip').hidden=true});addEventListener('scroll',()=>{$('#tip').hidden=true},true);
 $('#ex').onclick=()=>D?exp():alert('Belum ada data.');
+const stamp=()=>new Date().toISOString().slice(0,16).replace(/[-:T]/g,'');
+function saveProj(){if(!S.rows.length)return alert('Belum ada data.');syncPlan();const o={app:'ArcheryDesk',format:1,saved:new Date().toISOString(),hdr:S.hdr,rows:S.rows,map:S.map,cfg:S.cfg,pl:S.pl,pi:S.pi,ph:S.ph},a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(o)],{type:'application/json'}));a.download='ArcheryDesk_'+stamp()+'.archerydesk';a.click();toast('Proyek tersimpan — berisi data pribadi peserta, simpan dengan hati-hati')}
+function loadProj(t){let o;try{o=JSON.parse(t)}catch(e){return alert('File tidak bisa dibaca (bukan file proyek ArcheryDesk).')}
+ if(!o||o.app!='ArcheryDesk'||!Array.isArray(o.rows)||!o.rows.every(Array.isArray)||!Array.isArray(o.hdr)||!Array.isArray(o.pl)||!o.pl.length)return alert('File bukan proyek ArcheryDesk yang valid.');
+ if(+o.format>1)return alert('File dibuat dengan versi ArcheryDesk yang lebih baru. Perbarui aplikasi dulu.');
+ if(!confirm('Buka proyek ini?\n'+o.rows.length+' baris data · '+o.pl.length+' plan · disimpan '+String(o.saved||'').slice(0,16).replace('T',' ')+'\n\nProyek yang sedang aktif akan DITIMPA.'))return;
+ const ph=x=>({ses:(x&&Array.isArray(x.ses)&&x.ses.length?x.ses:[{n:'Sesi 1',it:[]}]).map(z=>({n:String(z.n||'Sesi'),it:Array.isArray(z.it)?z.it.map(String):[],...(z.ov&&typeof z.ov=='object'?{ov:z.ov}:{})})),cur:0}),
+ fix=p=>{const c={};PK.forEach(k=>c[k]=p.c&&p.c[k]!=null?p.c[k]:J(DC[k]));c.per=Object.assign({},DC.per,c.per);c.st=Object.assign({},c.st);return{n:String(p.n||'Plan'),c,P:{q:ph(p.P&&p.P.q),e:ph(p.P&&p.P.e)}}};
+ S.hdr=o.hdr.map(String);S.rows=o.rows;S.map=o.map&&typeof o.map=='object'?o.map:{};S.cfg=Object.assign({},DC,o.cfg||{});S.pl=o.pl.map(fix);S.pi=Math.min(Math.max(+o.pi||0,0),S.pl.length-1);S.ph=o.ph=='e'?'e':'q';
+ applyPlan();S.cfg.per=Object.assign({},DC.per,S.cfg.per);S.cfg.st=Object.assign({},S.cfg.st);syncPlan();run();toast('Proyek dibuka')}
+$('#sv').onclick=saveProj;$('#op').onclick=()=>$('#pf').click();$('#pf').onchange=async e=>{const f=e.target.files[0];if(f)loadProj(await f.text());e.target.value=''};
 const cf=(id,fn)=>$(id).onchange=e=>{fn(e.target);run()};
 cf('#c-ex',t=>S.cfg.exh=+t.checked);cf('#c-pe',t=>S.cfg.pe=+t.checked);cf('#c-as',t=>S.cfg.asc=+t.value);cf('#c-pr',t=>S.cfg.prim=t.value);cf('#c-rf',t=>S.cfg.ref=t.value);
 document.querySelectorAll('nav button,#vt button').forEach(b=>b.onclick=()=>tab(+b.dataset.t));
